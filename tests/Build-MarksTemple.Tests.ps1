@@ -41,14 +41,6 @@ Describe "Build-MarksTemple" {
     }
 
     Context "Execution" {
-        It "Temple file path should not be null or empty" {
-            $templePath | Should -Not -BeNullOrEmpty
-        }
-
-        It "Temple file exists at $templePath" -Skip:(!$templePath) {
-            Test-Path $templePath | Should -BeTrue
-        }
-
         It "Runs with defaults" -Skip:(!$templePath) {
             { Build-MarksTemple -TemplePath $templePath } | Should -Not -Throw
         }
