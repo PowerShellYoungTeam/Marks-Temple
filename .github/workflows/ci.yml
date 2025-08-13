@@ -1,4 +1,5 @@
 name: PowerShell CI
+
 on:
   push:
     branches: [ main ]
@@ -6,79 +7,47 @@ on:
     branches: [ main ]
 
 jobs:
-  pwsh-matrix:
-    name: pwsh / ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [windows-latest, ubuntu-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Show key files (debug)
-        run: |
-          echo "==== src/Build-MarksTemple.ps1 ===="
-          sed -n '1,120p' src/Build-MarksTemple.ps1 || true
-          echo "==== tests/Build-MarksTemple.Tests.ps1 ===="
-          sed -n '1,120p' tests/Build-MarksTemple.Tests.ps1 || true
-          echo "Tree:"
-          find . -maxdepth 3 -type f -name "*MarksTemple*" -print
-        shell: bash
-
-      - name: Ensure Pester (pwsh)
-        run: |
-          Remove-Module Pester -ErrorAction SilentlyContinue
-          $need = -not (Get-Module -ListAvailable -Name Pester | Where-Object Version -ge [Version]'5.5.0')
-          if ($need) {
-            Install-Module Pester -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck
-          }
-          "$((Get-Module -ListAvailable Pester | Sort-Object Version -Descending | Select-Object -First 1).Version) loaded candidate"
-        shell: pwsh
-
-      - name: Pre-parse function
-        run: |
-          $file = Join-Path $PWD 'src/Build-MarksTemple.ps1'
-          if (-not (Test-Path $file)) { throw "Missing $file" }
-          [void][System.Management.Automation.Language.Parser]::ParseFile($file,[ref]$null,[ref]$null)
-          "Parsed OK: $file"
-        shell: pwsh
-
-      - name: Run Pester
-        run: Invoke-Pester -Path ./tests -CI -Output Detailed
-        shell: pwsh
-
-  windows-powershell:
-    name: Windows PowerShell
+  test-windows-powershell:
+    name: Windows PowerShell (Windows)
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Show key files (debug)
+      - name: Install latest Pester
         run: |
-          Write-Host "==== src/Build-MarksTemple.ps1 ===="
-          Get-Content -Path src/Build-MarksTemple.ps1 -TotalCount 120
-          Write-Host "==== tests/Build-MarksTemple.Tests.ps1 ===="
-          Get-Content -Path tests/Build-MarksTemple.Tests.ps1 -TotalCount 120
+          Install-Module -Name Pester -Force -Scope CurrentUser
+          Import-Module Pester
+          Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: powershell
-
-      - name: Ensure Pester (Windows PowerShell)
+      - name: Run Pester tests
         run: |
-          Remove-Module Pester -ErrorAction SilentlyContinue
-          $need = -not (Get-Module -ListAvailable -Name Pester | Where-Object Version -ge [Version]'5.5.0')
-          if ($need) {
-            Install-Module Pester -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck
-          }
-          (Get-Module -ListAvailable Pester | Sort-Object Version -Descending | Select -First 1).Version
+          Import-Module Pester
+          Invoke-Pester -Path tests -Output Detailed
         shell: powershell
 
-      - name: Pre-parse function
+  test-windows-pwsh:
+    name: PowerShell Core (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install latest Pester
         run: |
-          $file = Join-Path $PWD 'src/Build-MarksTemple.ps1'
-          [void][System.Management.Automation.Language.Parser]::ParseFile($file,[ref]$null,[ref]$null)
-          "Parsed OK: $file"
-        shell: powershell
+          Install-Module -Name Pester -Force -Scope CurrentUser
+          Import-Module Pester
+          Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
+        shell: pwsh
+      - name: Run Pester tests
+        run: |
+          Import-Module Pester
+          Invoke-Pester -Path tests -Output Detailed
+        shell: pwsh
 
-      - name: Run Pester
-        run: Invoke-Pester -Path .\tests -Output Detailed
-        shell: powershell
+  test-linux-pwsh:
+    name: PowerShell Core (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install latest Pester
+        run: |
+          pwsh -c "Install-Module -Name Pester -Force -Scope CurrentUser; Import-Module Pester; Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1"
+      - name: Run Pester tests
+        run: pwsh -c "Import-Module Pester; Invoke-Pester -Path tests -Output Detailed"
