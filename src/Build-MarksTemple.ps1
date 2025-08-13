@@ -4,50 +4,47 @@ Function Build-MarksTemple {
     Builds a Temple in honour of Dark mode in Procmon.
 
     .DESCRIPTION
-    Renders the contents of a temple ASCII art file to the console with specified foreground and background colours.
+    Renders the contents of a temple ASCII art file to the console with specified foreground
+    and background colours. Reads ASCII from Temple.txt by default (same folder as this script).
 
     .PARAMETER ForeGroundColour
-    The colour to use for the temple text. Default is Yellow.
+    Foreground colour for the ASCII art. Default Yellow.
 
     .PARAMETER BackGroundColour
-    The colour to use for the temple background. Default is Black.
+    Background colour for the ASCII art. Default Black.
 
     .PARAMETER TemplePath
-    Path to the temple ASCII art file. Defaults to 'Temple.txt' in the script directory.
+    Path to the temple ASCII art file. Defaults to 'Temple.txt' beside this script.
 
     .EXAMPLE
     Build-MarksTemple
-    Displays the temple using default colours.
+    Renders using defaults.
 
     .EXAMPLE
-    Build-MarksTemple -ForeGroundColour 'Red' -BackGroundColour 'White'
-    Displays the temple in red text on a white background.
+    Build-MarksTemple -ForeGroundColour Red -BackGroundColour White
 
     .EXAMPLE
     Build-MarksTemple -TemplePath 'C:\Custom\Temple.txt'
-    Displays a custom temple file.
 
     .NOTES
-    Valid colours: Black, DarkBlue, DarkGreen, DarkCyan, DarkRed, DarkMagenta, DarkYellow, Gray, DarkGray, Blue, Green, Cyan, Red, Magenta, Yellow, White.
-
-    .OUTPUTS
-    None. Writes output to the console.
-
-    .WARNINGS
-    If the temple file is missing, a warning is displayed and nothing is rendered.
-
-    .AUTHOR
-    Steven Wight
+    Valid colours (ConsoleColor): Black, DarkBlue, DarkGreen, DarkCyan, DarkRed, DarkMagenta,
+    DarkYellow, Gray, DarkGray, Blue, Green, Cyan, Red, Magenta, Yellow, White.
     #>
     [CmdletBinding()]
     param(
-        [Parameter()] [String] [ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")] $ForeGroundColour = "YELLOW",
-        [Parameter()] [String] [ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")] $BackGroundColour = "BLACK",
-        [Parameter()] [String] $TemplePath = "$PSScriptRoot\Temple.txt"
+        [ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
+        [string]$ForeGroundColour = "Yellow",
+        [ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
+        [string]$BackGroundColour = "Black",
+        [string]$TemplePath = (Join-Path -Path $PSScriptRoot -ChildPath 'Temple.txt')
     )
-    if (-not (Test-Path $TemplePath)) {
-        Write-Warning "Temple file not found at $TemplePath"
+
+    if (-not (Test-Path -LiteralPath $TemplePath)) {
+        Write-Warning "Temple file not found: $TemplePath"
         return
     }
-    Get-Content $TemplePath | Write-Host -ForegroundColor $ForeGroundColour -BackgroundColor $BackGroundColour
+
+    Get-Content -LiteralPath $TemplePath | ForEach-Object {
+        Write-Host $_ -ForegroundColor $ForeGroundColour -BackgroundColor $BackGroundColour
+    }
 }

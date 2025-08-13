@@ -1,31 +1,31 @@
 # Pester tests for Build-MarksTemple
 
-if ($IsWindows) {
-    $scriptPath = Resolve-Path "$PSScriptRoot\..\src\Build-MarksTemple.ps1"
-    $templePath = Resolve-Path "$PSScriptRoot\..\src\Temple.txt"
-}
-else {
-    $scriptPath = Resolve-Path "$PSScriptRoot/../src/Build-MarksTemple.ps1"
-    $templePath = Resolve-Path "$PSScriptRoot/../src/Temple.txt"
-}
+$functionScript = Join-Path -Path $PSScriptRoot -ChildPath '..\src\Build-MarksTemple.ps1'
+$functionScript = (Resolve-Path $functionScript).ProviderPath
 
-. $scriptPath.Path
+Write-Host "Dot-sourcing: $functionScript"
+. $functionScript
 
-if (-not (Test-Path $templePath.Path)) {
-    Write-Warning "Temple.txt not found at $($templePath.Path). Skipping Build-MarksTemple tests."
+$templePath = Join-Path -Path $PSScriptRoot -ChildPath '..\src\Temple.txt'
+if (-not (Test-Path $templePath)) {
+    Write-Warning "Temple.txt not found at $templePath. Skipping tests."
     return
 }
 
-Describe "Build-MarksTemple" {
-    It "Should run without error using default parameters" {
-        { Build-MarksTemple -TemplePath $templePath.Path } | Should -Not -Throw
+Describe "Build-MarksTemple load" {
+    It "Function should be loaded" {
+        (Get-Command Build-MarksTemple -ErrorAction SilentlyContinue) | Should -Not -BeNullOrEmpty
     }
+}
 
-    It "Should run with custom colours" {
-        { Build-MarksTemple -ForeGroundColour 'Red' -BackGroundColour 'White' -TemplePath $templePath.Path } | Should -Not -Throw
+Describe "Build-MarksTemple execution" {
+    It "Runs with defaults" {
+        { Build-MarksTemple -TemplePath $templePath } | Should -Not -Throw
     }
-
-    It "Should throw with invalid colour" {
-        { Build-MarksTemple -ForeGroundColour 'Orange' -TemplePath $templePath.Path } | Should -Throw
+    It "Runs with custom colours" {
+        { Build-MarksTemple -ForeGroundColour Red -BackGroundColour White -TemplePath $templePath } | Should -Not -Throw
+    }
+    It "Throws on invalid colour (foreground)" {
+        { Build-MarksTemple -ForeGroundColour Orange -TemplePath $templePath } | Should -Throw
     }
 }
