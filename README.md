@@ -31,7 +31,7 @@ Build-MarksTemple -TemplePath 'C:\Custom\Temple.txt'
 Run Pester tests:
 
 ```powershell
-Invoke-Pester -Path Tests
+Invoke-Pester -Path tests
 ```
 
 ## CI/CD
