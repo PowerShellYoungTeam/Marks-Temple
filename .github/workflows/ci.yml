@@ -12,13 +12,16 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - name: List repo files
+        run: ls -R
+        shell: bash
       - name: Install latest Pester
         run: Install-Module -Name Pester -Force -Scope CurrentUser
         shell: powershell
       - name: Run Pester tests
         run: |
           Import-Module Pester
-          Invoke-Pester -Path tests -Output Detailed
+          Invoke-Pester -Path ./tests -Output Detailed -Verbose
         shell: powershell
 
   test-windows-pwsh:
@@ -26,13 +29,16 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      - name: List repo files
+        run: ls -R
+        shell: bash
       - name: Install latest Pester
         run: Install-Module -Name Pester -Force -Scope CurrentUser
         shell: pwsh
       - name: Run Pester tests
         run: |
           Import-Module Pester
-          Invoke-Pester -Path tests -Output Detailed
+          Invoke-Pester -Path ./tests -Output Detailed -Verbose
         shell: pwsh
 
   test-linux-pwsh:
@@ -40,17 +46,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: List repo files
+        run: ls -R
+        shell: bash
       - name: Install latest Pester
         run: pwsh -c "Install-Module -Name Pester -Force -Scope CurrentUser"
       - name: Run Pester tests
-        run: pwsh -c "Import-Module Pester; Invoke-Pester -Path tests -Output Detailed"
+        run: pwsh -c "Import-Module Pester; Invoke-Pester -Path ./tests -Output Detailed -Verbose"
 
   test-macos-pwsh:
     name: PowerShell Core (macOS)
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+      - name: List repo files
+        run: ls -R
+        shell: bash
       - name: Install latest Pester
         run: pwsh -c "Install-Module -Name Pester -Force -Scope CurrentUser"
       - name: Run Pester tests
-        run: pwsh -c "Import-Module Pester; Invoke-Pester -Path tests -Output Detailed"
+        run: pwsh -c "Import-Module Pester; Invoke-Pester -Path ./tests -Output Detailed
