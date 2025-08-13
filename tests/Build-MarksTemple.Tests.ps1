@@ -5,8 +5,10 @@ Write-Host "PSScriptRoot: $PSScriptRoot"
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
 $scriptFile = Join-Path $repoRoot 'src/Build-MarksTemple.ps1'
-$templePathObj = Resolve-Path (Join-Path $repoRoot 'src/Temple.txt') -ErrorAction SilentlyContinue
-$templePath = if ($templePathObj) { $templePathObj.Path } else { $null }
+
+# Search for Temple.txt anywhere in the repo
+$templePathObj = Get-ChildItem -Path $repoRoot.Path -Recurse -Filter Temple.txt -File | Select-Object -First 1
+$templePath = if ($templePathObj) { $templePathObj.FullName } else { $null }
 
 Write-Host "Script file path: $scriptFile"
 Write-Host "Script file exists: $(Test-Path $scriptFile)"
@@ -41,6 +43,14 @@ Describe "Build-MarksTemple" {
     }
 
     Context "Execution" {
+        It "Temple file path should not be null or empty" {
+            $templePath | Should -Not -BeNullOrEmpty
+        }
+
+        It "Temple file exists at $templePath" -Skip:(!$templePath) {
+            Test-Path $templePath | Should -BeTrue
+        }
+
         It "Runs with defaults" -Skip:(!$templePath) {
             { Build-MarksTemple -TemplePath $templePath } | Should -Not -Throw
         }
