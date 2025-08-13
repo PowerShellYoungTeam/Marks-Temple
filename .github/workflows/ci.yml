@@ -19,16 +19,12 @@ jobs:
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: powershell
 
-      - name: Dot-source Build-MarksTemple.ps1 (debug)
+      - name: Dot-source Build-MarksTemple.ps1 (debug) Run Pester tests
         run: |
           $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
           . $scriptFile.ProviderPath
           Write-Host "Functions after dot-sourcing:"
-          Get-Command -Type Function | Format-Table Name,Source
-        shell: powershell
-
-      - name: Run Pester tests
-        run: |
+          Get-Command -Type Function | where-object -property Name -like '*Build-MarksTemple*' | Format-Table Name,Source
           Import-Module Pester
           Invoke-Pester -Path tests -Output Detailed
         shell: powershell
@@ -50,14 +46,11 @@ jobs:
           $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
           . $scriptFile.ProviderPath
           Write-Host "Functions after dot-sourcing:"
-          Get-Command -Type Function | Format-Table Name,Source
-        shell: pwsh
-
-      - name: Run Pester tests
-        run: |
+          Get-Command -Type Function  | where-object -property Name -like '*Build-MarksTemple*' |  Format-Table Name,Source
           Import-Module Pester
           Invoke-Pester -Path tests -Output Detailed
         shell: pwsh
+
 
 
   test-linux-pwsh:
@@ -78,7 +71,7 @@ jobs:
           $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
           . $scriptFile
           Write-Host "Functions after dot-sourcing:"
-          Get-Command -Type Function | Format-Table Name,Source
+          Get-Command -Type Function  | where-object -property Name -like '*Build-MarksTemple*' |  Format-Table Name,Source
           Import-Module Pester
           Invoke-Pester -Path tests -Output Detailed
         shell: pwsh
@@ -101,7 +94,7 @@ jobs:
           $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
           . $scriptFile
           Write-Host "Functions after dot-sourcing:"
-          Get-Command -Type Function | Format-Table Name,Source
+          Get-Command -Type Function  | where-object -property Name -like '*Build-MarksTemple*' |  Format-Table Name,Source
           Import-Module Pester
           Invoke-Pester -Path tests -Output Detailed
         shell: pwsh

@@ -30,7 +30,7 @@ if ($Error.Count -gt 0) {
 }
 
 Write-Host "Functions loaded:"
-Get-Command -Type Function | Where-Object Name -like '*MarksTemple*' | Format-Table Name, Source
+Get-Command -Type Function | Where-Object Name -like '*Build-MarksTemple*' | Format-Table Name, Source
 
 $bytes = [System.IO.File]::ReadAllBytes($scriptFile)
 Write-Host "First bytes of script file: $($bytes[0..4] -join ',')"
