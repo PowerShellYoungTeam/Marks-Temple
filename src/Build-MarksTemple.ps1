@@ -36,7 +36,7 @@ Function Build-MarksTemple {
         [string]$ForeGroundColour = "Yellow",
         [ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
         [string]$BackGroundColour = "Black",
-        [string]$TemplePath = (Join-Path -Path $PSScriptRoot -ChildPath 'Temple.txt')
+        [string]$TemplePath = (Join-Path -Path (Split-Path -Path $MyInvocation.MyCommand.Path) -ChildPath 'Temple.txt')
     )
 
     if (-not (Test-Path -LiteralPath $TemplePath)) {
