@@ -3,7 +3,7 @@
 # Load the script
 . "$PSScriptRoot\..\src\Build-MarksTemple.ps1"
 
-$templePath = "$PSScriptRoot\..\Temple.txt"
+$templePath = "$PSScriptRoot\..\src\Temple.txt"
 
 if (-not (Test-Path $templePath)) {
     Write-Warning "Temple.txt not found at $templePath. Skipping Build-MarksTemple tests."
@@ -12,14 +12,14 @@ if (-not (Test-Path $templePath)) {
 
 Describe "Build-MarksTemple" {
     It "Should run without error using default parameters" {
-        { Build-MarksTemple } | Should -Not -Throw
+        { Build-MarksTemple -TemplePath $templePath } | Should -Not -Throw
     }
 
     It "Should run with custom colours" {
-        { Build-MarksTemple -ForeGroundColour 'Red' -BackGroundColour 'White' } | Should -Not -Throw
+        { Build-MarksTemple -ForeGroundColour 'Red' -BackGroundColour 'White' -TemplePath $templePath } | Should -Not -Throw
     }
 
     It "Should throw with invalid colour" {
-        { Build-MarksTemple -ForeGroundColour 'Orange' } | Should -Throw
+        { Build-MarksTemple -ForeGroundColour 'Orange' -TemplePath $templePath } | Should -Throw
     }
 }
