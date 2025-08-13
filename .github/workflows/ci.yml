@@ -16,28 +16,36 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Show key files
+      - name: Show key files (debug)
         run: |
-          echo "==== Build-MarksTemple.ps1 ===="
-          sed -n '1,140p' src/Build-MarksTemple.ps1
-          echo "==== Tests ===="
-          sed -n '1,140p' tests/Build-MarksTemple.Tests.ps1
+          echo "==== src/Build-MarksTemple.ps1 ===="
+          sed -n '1,120p' src/Build-MarksTemple.ps1 || true
+          echo "==== tests/Build-MarksTemple.Tests.ps1 ===="
+          sed -n '1,120p' tests/Build-MarksTemple.Tests.ps1 || true
+          echo "Tree:"
+          find . -maxdepth 3 -type f -name "*MarksTemple*" -print
         shell: bash
 
-      - name: Install Pester
+      - name: Ensure Pester (pwsh)
         run: |
-          Install-Module Pester -Force -Scope CurrentUser
-          (Get-Module Pester -ListAvailable | Sort Version -Descending | Select -First 1).Version
+          Remove-Module Pester -ErrorAction SilentlyContinue
+          $need = -not (Get-Module -ListAvailable -Name Pester | Where-Object Version -ge [Version]'5.5.0')
+          if ($need) {
+            Install-Module Pester -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck
+          }
+          "$((Get-Module -ListAvailable Pester | Sort-Object Version -Descending | Select-Object -First 1).Version) loaded candidate"
         shell: pwsh
 
       - name: Pre-parse function
         run: |
-          $ast = [System.Management.Automation.Language.Parser]::ParseFile("$PWD/src/Build-MarksTemple.ps1",[ref]$null,[ref]$null)
-          Write-Host "Parsed OK. Top-level AST type: $($ast.GetType().Name)"
+          $file = Join-Path $PWD 'src/Build-MarksTemple.ps1'
+          if (-not (Test-Path $file)) { throw "Missing $file" }
+          [void][System.Management.Automation.Language.Parser]::ParseFile($file,[ref]$null,[ref]$null)
+          "Parsed OK: $file"
         shell: pwsh
 
       - name: Run Pester
-        run: Invoke-Pester -Path ./tests -Output Detailed -Verbose -CI
+        run: Invoke-Pester -Path ./tests -CI -Output Detailed
         shell: pwsh
 
   windows-powershell:
@@ -45,21 +53,32 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Show key files
+
+      - name: Show key files (debug)
         run: |
-          echo "==== Build-MarksTemple.ps1 ===="
-          type src\Build-MarksTemple.ps1
-          echo "==== Tests ===="
-          type tests\Build-MarksTemple.Tests.ps1
-        shell: bash
-      - name: Install Pester
-        run: Install-Module Pester -Force -Scope CurrentUser
+          Write-Host "==== src/Build-MarksTemple.ps1 ===="
+          Get-Content -Path src/Build-MarksTemple.ps1 -TotalCount 120
+          Write-Host "==== tests/Build-MarksTemple.Tests.ps1 ===="
+          Get-Content -Path tests/Build-MarksTemple.Tests.ps1 -TotalCount 120
         shell: powershell
+
+      - name: Ensure Pester (Windows PowerShell)
+        run: |
+          Remove-Module Pester -ErrorAction SilentlyContinue
+          $need = -not (Get-Module -ListAvailable -Name Pester | Where-Object Version -ge [Version]'5.5.0')
+          if ($need) {
+            Install-Module Pester -Scope CurrentUser -Force -AllowClobber -SkipPublisherCheck
+          }
+          (Get-Module -ListAvailable Pester | Sort-Object Version -Descending | Select -First 1).Version
+        shell: powershell
+
       - name: Pre-parse function
         run: |
-          [void][System.Management.Automation.Language.Parser]::ParseFile("$PWD\src\Build-MarksTemple.ps1",[ref]$null,[ref]$null)
-          Write-Host "Parsed OK."
+          $file = Join-Path $PWD 'src/Build-MarksTemple.ps1'
+          [void][System.Management.Automation.Language.Parser]::ParseFile($file,[ref]$null,[ref]$null)
+          "Parsed OK: $file"
         shell: powershell
+
       - name: Run Pester
-        run: Invoke-Pester -Path .\tests -Output Detailed -Verbose
+        run: Invoke-Pester -Path .\tests -Output Detailed
         shell: powershell
