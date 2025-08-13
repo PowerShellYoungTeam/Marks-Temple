@@ -18,6 +18,15 @@ jobs:
           Import-Module Pester
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: powershell
+
+      - name: Dot-source Build-MarksTemple.ps1 (debug)
+        run: |
+          $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
+          . $scriptFile.ProviderPath
+          Write-Host "Functions after dot-sourcing:"
+          Get-Command -Type Function | Format-Table Name,Source
+        shell: powershell
+
       - name: Run Pester tests
         run: |
           Import-Module Pester
@@ -35,11 +44,21 @@ jobs:
           Import-Module Pester
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: pwsh
+
+      - name: Dot-source Build-MarksTemple.ps1 (debug)
+        run: |
+          $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
+          . $scriptFile.ProviderPath
+          Write-Host "Functions after dot-sourcing:"
+          Get-Command -Type Function | Format-Table Name,Source
+        shell: pwsh
+
       - name: Run Pester tests
         run: |
           Import-Module Pester
           Invoke-Pester -Path tests -Output Detailed
         shell: pwsh
+
 
   test-linux-pwsh:
     name: PowerShell Core (Linux)
@@ -49,5 +68,24 @@ jobs:
       - name: Install latest Pester
         run: |
           pwsh -c "Install-Module -Name Pester -Force -Scope CurrentUser; Import-Module Pester; Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1"
+
+      - name: Dot-source Build-MarksTemple.ps1 (debug)
+        run: pwsh -c "$scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'; . $scriptFile.ProviderPath; Write-Host 'Functions after dot-sourcing:'; Get-Command -Type Function | Format-Table Name,Source"
+
+      - name: Run Pester tests
+        run: pwsh -c "Import-Module Pester; Invoke-Pester -Path tests -Output Detailed"
+
+  test-macos-pwsh:
+    name: PowerShell Core (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install latest Pester
+        run: |
+          pwsh -c "Install-Module -Name Pester -Force -Scope CurrentUser; Import-Module Pester; Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1"
+
+      - name: Dot-source Build-MarksTemple.ps1 (debug)
+        run: pwsh -c "$scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'; . $scriptFile.ProviderPath; Write-Host 'Functions after dot-sourcing:'; Get-Command -Type Function | Format-Table Name,Source"
+
       - name: Run Pester tests
         run: pwsh -c "Import-Module Pester; Invoke-Pester -Path tests -Output Detailed"
