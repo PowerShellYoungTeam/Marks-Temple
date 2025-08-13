@@ -1,10 +1,15 @@
 # Pester tests for Build-MarksTemple
 
-# Load the script using Resolve-Path for cross-platform compatibility
-$scriptPath = Resolve-Path "$PSScriptRoot/../src/Build-MarksTemple.ps1"
-. $scriptPath
+if ($IsWindows) {
+    $scriptPath = Resolve-Path "$PSScriptRoot\..\src\Build-MarksTemple.ps1"
+    $templePath = Resolve-Path "$PSScriptRoot\..\src\Temple.txt"
+}
+else {
+    $scriptPath = Resolve-Path "$PSScriptRoot/../src/Build-MarksTemple.ps1"
+    $templePath = Resolve-Path "$PSScriptRoot/../src/Temple.txt"
+}
 
-$templePath = Resolve-Path "$PSScriptRoot/../src/Temple.txt"
+. $scriptPath
 
 if (-not (Test-Path $templePath)) {
     Write-Warning "Temple.txt not found at $templePath. Skipping Build-MarksTemple tests."
