@@ -65,37 +65,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install latest Pester
         run: |
-          pwsh -c "Install-Module -Name Pester -Force -Scope CurrentUser; Import-Module Pester; Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1"
+          Install-Module -Name Pester -Force -Scope CurrentUser
+          Import-Module Pester
+          Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
+        shell: pwsh
 
-      - name: Dot-source Build-MarksTemple.ps1 (debug)
+      - name: Dot-source Build-MarksTemple.ps1 and Run Pester tests
         run: |
           $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
           . $scriptFile
           Write-Host "Functions after dot-sourcing:"
           Get-Command -Type Function | Format-Table Name,Source
-          shell: pwsh
-
-      - name: Run Pester tests
-        run: pwsh -c "Import-Module Pester; Invoke-Pester -Path tests -Output Detailed"
+          Import-Module Pester
+          Invoke-Pester -Path tests -Output Detailed
+        shell: pwsh
 
   test-macos-pwsh:
     name: PowerShell Core (macOS)
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install latest Pester
         run: |
-          pwsh -c "Install-Module -Name Pester -Force -Scope CurrentUser; Import-Module Pester; Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1"
+          Install-Module -Name Pester -Force -Scope CurrentUser
+          Import-Module Pester
+          Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
+        shell: pwsh
 
-      - name: Dot-source Build-MarksTemple.ps1 (debug)
+      - name: Dot-source Build-MarksTemple.ps1 and Run Pester tests
         run: |
           $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
           . $scriptFile
           Write-Host "Functions after dot-sourcing:"
           Get-Command -Type Function | Format-Table Name,Source
-          shell: pwsh
-
-      - name: Run Pester tests
-        run: pwsh -c "Import-Module Pester; Invoke-Pester -Path tests -Output Detailed"
+          Import-Module Pester
+          Invoke-Pester -Path tests -Output Detailed
+        shell: pwsh
