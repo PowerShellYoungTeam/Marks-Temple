@@ -3,7 +3,7 @@
 A PowerShell script that builds a Temple in honour of Dark mode in Procmon.
 
 This was promised to Mark Russinovich after hours burning my eyes staring at Procmon logs
-[Twitter Thread]](https://x.com/PoSHYoungTeam/status/1418667570920570881)
+[Twitter Thread](https://x.com/PoSHYoungTeam/status/1418667570920570881)
 
 ## Features
 
