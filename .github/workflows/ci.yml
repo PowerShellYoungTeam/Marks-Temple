@@ -6,41 +6,70 @@ on:
     branches: [ main ]
 
 jobs:
-  matrix-test:
+  pwsh-matrix:
+    name: pwsh / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
-        shell: [pwsh]
-        include:
-          - os: windows-latest
-            shell: powershell
-    runs-on: ${{ matrix.os }}
-    name: ${{ matrix.os }} / ${{ matrix.shell }}
     steps:
       - uses: actions/checkout@v4
 
       - name: List repo (debug)
-        run: |
-          ls -R
+        run: ls -R
         shell: bash
 
-      - name: Show script (debug)
+      - name: Show key files (debug)
         run: |
-          echo "===== Build-MarksTemple.ps1 ====="
+          echo "===== src/Build-MarksTemple.ps1 ====="
           cat ./src/Build-MarksTemple.ps1
-          echo "===== Test file ====="
+          echo "===== tests/Build-MarksTemple.Tests.ps1 ====="
           cat ./tests/Build-MarksTemple.Tests.ps1
         shell: bash
 
-      - name: Install Pester
+      - name: Install Pester (pwsh)
         run: |
-          Install-Module Pester -Force -Scope CurrentUser
-          Get-Module Pester -ListAvailable | Select-Object Name,Version | Sort-Object Version -Descending | Select-Object -First 1
-        shell: ${{ matrix.shell }}
+            Install-Module Pester -Force -Scope CurrentUser
+            Write-Host "Installed Pester versions:"
+            Get-Module Pester -ListAvailable | Select Name,Version
+        shell: pwsh
 
-      - name: Run Pester
+      - name: Run Pester (pwsh)
         run: |
-          Write-Host "Pester version:"; (Get-Module Pester -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1).Version
-          Invoke-Pester -Path ./tests -Output Detailed -Verbose
-        shell: ${{ matrix.shell }}
+            Write-Host "Using Pester version:"
+            (Get-Module Pester -ListAvailable | Sort Version -Descending | Select -First 1).Version
+            Invoke-Pester -Path ./tests -CI -Output Detailed -Verbose
+        shell: pwsh
+
+  windows-powershell:
+    name: Windows PowerShell (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: List repo (debug)
+        run: ls -R
+        shell: bash
+
+      - name: Show key files (debug)
+        run: |
+          echo "===== src/Build-MarksTemple.ps1 ====="
+          cat ./src/Build-MarksTemple.ps1
+          echo "===== tests/Build-MarksTemple.Tests.ps1 ====="
+          cat ./tests/Build-MarksTemple.Tests.ps1
+        shell: bash
+
+      - name: Install Pester (Windows PowerShell)
+        run: |
+            Install-Module Pester -Force -Scope CurrentUser
+            Write-Host "Installed Pester versions:"
+            Get-Module Pester -ListAvailable | Select Name,Version
+        shell: powershell
+
+      - name: Run Pester (Windows PowerShell)
+        run: |
+            Write-Host "Using Pester version:"
+            (Get-Module Pester -ListAvailable | Sort Version -Descending | Select -First 1).Version
+            Invoke-Pester -Path .\tests -Output Detailed -Verbose
+        shell: powershell
