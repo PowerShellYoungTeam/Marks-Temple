@@ -39,7 +39,7 @@ Function Build-MarksTemple {
         [string]$TemplePath = (Join-Path -Path $PSScriptRoot -ChildPath 'Temple.txt')
     )
 
-    Write-Verbose "TemplePath received: $TemplePath"
+    Write-Verbose "TemplePath resolved to: $TemplePath"
     if (-not (Test-Path -LiteralPath $TemplePath)) {
         Write-Warning "Temple file not found: $TemplePath"
         return
