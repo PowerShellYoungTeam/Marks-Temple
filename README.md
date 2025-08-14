@@ -15,7 +15,7 @@ This was promised to Mark Russinovich after hours burning my eyes staring at Pro
 Clone the repository and import the script:
 
 ```powershell
-. .\src\Build-MarksTemple.ps1
+Import-Module .\src\Build-MarksTemple.psm1
 ```
 
 ## Usage
