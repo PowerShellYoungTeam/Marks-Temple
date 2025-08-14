@@ -13,7 +13,7 @@ $templePath = if ($templePathObj) { $templePathObj.FullName } else { $null }
 Write-Host "Module file path: $moduleFile"
 Write-Host "Module file exists: $(Test-Path $moduleFile)"
 Write-Host "Temple file path: $templePath"
-Write-Host "Temple file exists: $([bool]$templePath)"
+Write-Host "Temple file exists: $(Test-Path $templePath -ErrorAction SilentlyContinue)"
 
 try {
     [void][System.Management.Automation.Language.Parser]::ParseFile($moduleFile, [ref]$null, [ref]$null)
@@ -24,16 +24,9 @@ catch {
 }
 
 Import-Module $moduleFile -Force -Verbose
-<#if ($Error.Count -gt 0) {
-    Write-Host "Errors after Import-Module:"
-    $Error | Format-List
-}#>
 
 Write-Host "Functions loaded:"
 Get-Command -Type Function | Where-Object Name -like '*MarksTemple*' | Format-Table Name, Source
-
-#$bytes = [System.IO.File]::ReadAllBytes($moduleFile)
-#Write-Host "First bytes of module file: $($bytes[0..4] -join ',')"
 
 Describe "Build-MarksTemple" {
     Context "Load" {
@@ -50,25 +43,28 @@ Describe "Build-MarksTemple" {
             $script:localTemplePath = if ($templePathObj) { $templePathObj.FullName } else { $null }
 
             Write-Host "BeforeAll: Setting up templePath: $script:localTemplePath"
+            Write-Host "Temple file exists in BeforeAll: $(Test-Path $script:localTemplePath -ErrorAction SilentlyContinue)"
         }
 
         It "Temple file path should not be null or empty" {
             $script:localTemplePath | Should -Not -BeNullOrEmpty
         }
 
-        It "Temple file exists at $templePath" -Skip:(!$script:localTemplePath) {
+        # Fixed: Use $script:localTemplePath in the test name and removed skip condition
+        It "Temple file exists at path" {
             Test-Path $script:localTemplePath | Should -BeTrue
         }
 
-        It "Runs with defaults" -Skip:(!$script:localTemplePath) {
+        # Fixed: Removed skip conditions since we've verified the path exists
+        It "Runs with defaults" {
             { Build-MarksTemple -TemplePath $script:localTemplePath -Verbose } | Should -Not -Throw
         }
 
-        It "Runs with custom colours" -Skip:(!$script:localTemplePath) {
+        It "Runs with custom colours" {
             { Build-MarksTemple -ForeGroundColour Red -BackGroundColour White -TemplePath $script:localTemplePath -Verbose } | Should -Not -Throw
         }
 
-        It "Throws on invalid colour" -Skip:(!$script:localTemplePath) {
+        It "Throws on invalid colour" {
             { Build-MarksTemple -ForeGroundColour Orange -TemplePath $script:localTemplePath -Verbose } | Should -Throw
         }
     }
