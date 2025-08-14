@@ -41,7 +41,8 @@ Describe "Build-MarksTemple" {
             $script:localTemplePath = if ($templePathObj) { $templePathObj.FullName } else { $null }
 
             Write-Host "BeforeAll: Setting up templePath: $script:localTemplePath"
-            Write-Host "Temple file exists in BeforeAll: $(Test-Path $script:localTemplePath -ErrorAction SilentlyContinue)"
+            # Write-Host "BeforeAll: Setting up templePath: $script:localTemplePath"  # Removed debug output
+            # Write-Host "Temple file exists in BeforeAll: $(Test-Path $script:localTemplePath -ErrorAction SilentlyContinue)"  # Removed debug output
         }
 
         It "Temple file path should not be null or empty" {
