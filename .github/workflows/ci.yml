@@ -19,11 +19,11 @@ jobs:
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: powershell
 
-      - name: Dot-source Build-MarksTemple.ps1 (debug) Run Pester tests
+      - name: Import Build-MarksTemple module and run Pester tests
         run: |
-          $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
-          . $scriptFile.ProviderPath
-          Write-Host "Functions after dot-sourcing:"
+          $moduleFile = Resolve-Path './src/Build-MarksTemple.psm1'
+          Import-Module $moduleFile -Force
+          Write-Host "Functions after Import-Module:"
           Get-Command -Type Function | where-object -property Name -like '*Build-MarksTemple*' | Format-Table Name,Source
           Import-Module Pester
           Invoke-Pester -Path tests -Output Detailed
@@ -41,12 +41,12 @@ jobs:
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: pwsh
 
-      - name: Dot-source Build-MarksTemple.ps1 (debug)
+      - name: Import Build-MarksTemple module and run Pester tests
         run: |
-          $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
-          . $scriptFile.ProviderPath
-          Write-Host "Functions after dot-sourcing:"
-          Get-Command -Type Function  | where-object -property Name -like '*Build-MarksTemple*' |  Format-Table Name,Source
+          $moduleFile = Resolve-Path './src/Build-MarksTemple.psm1'
+          Import-Module $moduleFile -Force
+          Write-Host "Functions after Import-Module:"
+          Get-Command -Type Function | where-object -property Name -like '*Build-MarksTemple*' | Format-Table Name,Source
           Import-Module Pester
           Invoke-Pester -Path tests -Output Detailed
         shell: pwsh
@@ -66,12 +66,12 @@ jobs:
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: pwsh
 
-      - name: Dot-source Build-MarksTemple.ps1 and Run Pester tests
+      - name: Import Build-MarksTemple module and run Pester tests
         run: |
-          $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
-          . $scriptFile
-          Write-Host "Functions after dot-sourcing:"
-          Get-Command -Type Function  | where-object -property Name -like '*Build-MarksTemple*' |  Format-Table Name,Source
+          $moduleFile = Resolve-Path './src/Build-MarksTemple.psm1'
+          Import-Module $moduleFile -Force
+          Write-Host "Functions after Import-Module:"
+          Get-Command -Type Function | where-object -property Name -like '*Build-MarksTemple*' | Format-Table Name,Source
           Import-Module Pester
           Invoke-Pester -Path tests -Output Detailed
         shell: pwsh
@@ -89,12 +89,12 @@ jobs:
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: pwsh
 
-      - name: Dot-source Build-MarksTemple.ps1 and Run Pester tests
+      - name: Import Build-MarksTemple module and run Pester tests
         run: |
-          $scriptFile = Resolve-Path './src/Build-MarksTemple.ps1'
-          . $scriptFile
-          Write-Host "Functions after dot-sourcing:"
-          Get-Command -Type Function  | where-object -property Name -like '*Build-MarksTemple*' |  Format-Table Name,Source
+          $moduleFile = Resolve-Path './src/Build-MarksTemple.psm1'
+          Import-Module $moduleFile -Force
+          Write-Host "Functions after Import-Module:"
+          Get-Command -Type Function | where-object -property Name -like '*Build-MarksTemple*' | Format-Table Name,Source
           Import-Module Pester
           Invoke-Pester -Path tests -Output Detailed
         shell: pwsh
