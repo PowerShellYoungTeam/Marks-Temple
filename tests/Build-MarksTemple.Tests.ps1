@@ -2,7 +2,6 @@
 
 Write-Host "Current directory: $(Get-Location)"
 Write-Host "PSScriptRoot: $PSScriptRoot"
-
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
 $moduleFile = Join-Path $repoRoot 'src/Build-MarksTemple.psm1'
 
