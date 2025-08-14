@@ -4,35 +4,36 @@ Write-Host "Current directory: $(Get-Location)"
 Write-Host "PSScriptRoot: $PSScriptRoot"
 
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
-$scriptFile = Join-Path $repoRoot 'src/Build-MarksTemple.ps1'
+$moduleFile = Join-Path $repoRoot 'src/Build-MarksTemple.psm1'
 
 # Search for Temple.txt anywhere in the repo
 $templePathObj = Get-ChildItem -Path $repoRoot.Path -Recurse -Filter Temple.txt -File | Select-Object -First 1
 $templePath = if ($templePathObj) { $templePathObj.FullName } else { $null }
 
-Write-Host "Script file path: $scriptFile"
-Write-Host "Script file exists: $(Test-Path $scriptFile)"
+Write-Host "Module file path: $moduleFile"
+Write-Host "Module file exists: $(Test-Path $moduleFile)"
 Write-Host "Temple file path: $templePath"
 Write-Host "Temple file exists: $([bool]$templePath)"
 
 try {
-    [void][System.Management.Automation.Language.Parser]::ParseFile($scriptFile, [ref]$null, [ref]$null)
-    Write-Host "Script parsed OK."
+    [void][System.Management.Automation.Language.Parser]::ParseFile($moduleFile, [ref]$null, [ref]$null)
+    Write-Host "Module parsed OK."
 }
 catch {
-    Write-Host "Script parse error: $_"
+    Write-Host "Module parse error: $_"
 }
 
-Import-Module "$PSScriptRoot/../src/Build-MarksTemple.psm1"
-#. $scriptFile
-if ($Error.Count -gt 0) {
-    Write-Host "Errors after dot-sourcing:"
+Import-Module $moduleFile -Force
+<#if ($Error.Count -gt 0) {
+    Write-Host "Errors after Import-Module:"
     $Error | Format-List
-}
+}#>
 
+Write-Host "Functions loaded:"
+Get-Command -Type Function | Where-Object Name -like '*MarksTemple*' | Format-Table Name, Source
 
-$bytes = [System.IO.File]::ReadAllBytes($scriptFile)
-Write-Host "First bytes of script file: $($bytes[0..4] -join ',')"
+#$bytes = [System.IO.File]::ReadAllBytes($moduleFile)
+#Write-Host "First bytes of module file: $($bytes[0..4] -join ',')"
 
 Describe "Build-MarksTemple" {
     Context "Load" {
@@ -51,15 +52,15 @@ Describe "Build-MarksTemple" {
         }
 
         It "Runs with defaults" -Skip:(!$templePath) {
-            { Build-MarksTemple -TemplePath $templePath } | Should -Not -Throw
+            { Build-MarksTemple -TemplePath $templePath -Verbose } | Should -Not -Throw
         }
 
         It "Runs with custom colours" -Skip:(!$templePath) {
-            { Build-MarksTemple -ForeGroundColour Red -BackGroundColour White -TemplePath $templePath } | Should -Not -Throw
+            { Build-MarksTemple -ForeGroundColour Red -BackGroundColour White -TemplePath $templePath -Verbose } | Should -Not -Throw
         }
 
         It "Throws on invalid colour" -Skip:(!$templePath) {
-            { Build-MarksTemple -ForeGroundColour Orange -TemplePath $templePath } | Should -Throw
+            { Build-MarksTemple -ForeGroundColour Orange -TemplePath $templePath -Verbose } | Should -Throw
         }
     }
 }

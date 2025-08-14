@@ -32,13 +32,14 @@ Function Build-MarksTemple {
     #>
     [CmdletBinding()]
     param(
-        [ValidateSet("Black","DarkBlue","DarkGreen","DarkCyan","DarkRed","DarkMagenta","DarkYellow","Gray","DarkGray","Blue","Green","Cyan","Red","Magenta","Yellow","White")]
+        [ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
         [string]$ForeGroundColour = "Yellow",
-        [ValidateSet("Black","DarkBlue","DarkGreen","DarkCyan","DarkRed","DarkMagenta","DarkYellow","Gray","DarkGray","Blue","Green","Cyan","Red","Magenta","Yellow","White")]
+        [ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]
         [string]$BackGroundColour = "Black",
         [string]$TemplePath = (Join-Path -Path $PSScriptRoot -ChildPath 'Temple.txt')
     )
 
+    Write-Verbose "TemplePath received: $TemplePath"
     if (-not (Test-Path -LiteralPath $TemplePath)) {
         Write-Warning "Temple file not found: $TemplePath"
         return
@@ -48,3 +49,5 @@ Function Build-MarksTemple {
         Write-Host $_ -ForegroundColor $ForeGroundColour -BackgroundColor $BackGroundColour
     }
 }
+
+Export-ModuleMember -Function Build-MarksTemple
