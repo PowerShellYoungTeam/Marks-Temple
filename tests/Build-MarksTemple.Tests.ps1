@@ -23,14 +23,13 @@ catch {
     Write-Host "Script parse error: $_"
 }
 
-. $scriptFile
+Import-Module "$PSScriptRoot/../src/Build-MarksTemple.psm1"
+#. $scriptFile
 if ($Error.Count -gt 0) {
     Write-Host "Errors after dot-sourcing:"
     $Error | Format-List
 }
 
-Write-Host "Functions loaded:"
-Get-Command -Type Function | Where-Object Name -like '*Build-MarksTemple*' | Format-Table Name, Source
 
 $bytes = [System.IO.File]::ReadAllBytes($scriptFile)
 Write-Host "First bytes of script file: $($bytes[0..4] -join ',')"
@@ -38,7 +37,7 @@ Write-Host "First bytes of script file: $($bytes[0..4] -join ',')"
 Describe "Build-MarksTemple" {
     Context "Load" {
         It "Function should be loaded" {
-            (Get-Command Build-MarksTemple -ErrorAction SilentlyContinue) | Should -Not -BeNullOrEmpty
+            (Get-Command -Type Function -Name '*Build-MarksTemple*' -ErrorAction SilentlyContinue) | Should -Not -BeNullOrEmpty
         }
     }
 
