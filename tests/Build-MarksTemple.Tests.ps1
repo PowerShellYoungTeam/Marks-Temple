@@ -43,10 +43,12 @@ Describe "Build-MarksTemple" {
     }
 
     Context "Execution" {
-        # Variables defined in BeforeAll are available to all tests in this context
         BeforeAll {
-            # Create local copies of variables to ensure proper scoping
-            $script:localTemplePath = $templePath
+            # Move the file search here to ensure it runs in the correct scope
+            $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
+            $templePathObj = Get-ChildItem -Path $repoRoot.Path -Recurse -Filter Temple.txt -File | Select-Object -First 1
+            $script:localTemplePath = if ($templePathObj) { $templePathObj.FullName } else { $null }
+
             Write-Host "BeforeAll: Setting up templePath: $script:localTemplePath"
         }
 
