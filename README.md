@@ -1,13 +1,47 @@
 # Marks-Temple
- Temple built from PoSh in honour of dark mode coming to Procmon (I said I would on Twitter..)
 
-###    .SYNOPSIS
-      Function that builds a Temple in honour of Dark mode in Procmon
-      by Steven Wight
-###    .DESCRIPTION
-      Build-MarksTemple -ForeGroundColour <Colour> Default = Yellow -BackgroundColor <Colour> Default Black
-###    .EXAMPLE
-    Build-MarksTemple RED BLACK
-###    .NOTES
-    can take any of these as ForeGround or BackGround Colours
-    "Black","DarkBlue","DarkGreen","DarkCyan","DarkRed","DarkMagenta","DarkYellow","Gray","DarkGray","Blue","Green","Cyan","Red","Magenta","Yellow","White"
+A PowerShell script that builds a Temple in honour of Dark mode in Procmon.
+
+This was promised to Mark Russinovich after hours burning my eyes staring at Procmon logs
+[Twitter Thread](https://x.com/PoSHYoungTeam/status/1418667570920570881)
+
+## Features
+
+- Renders ASCII art temple with custom colours
+- Easy to use and extend
+
+## Installation
+
+Clone the repository and import the script:
+
+```powershell
+Import-Module .\src\Build-MarksTemple.psm1
+```
+
+## Usage
+
+```powershell
+Build-MarksTemple
+Build-MarksTemple -ForeGroundColour 'Red' -BackGroundColour 'White'
+Build-MarksTemple -TemplePath 'C:\Custom\Temple.txt'
+```
+
+## Testing
+
+Run Pester tests:
+
+```powershell
+Invoke-Pester -Path tests
+```
+
+## CI/CD
+
+![CI](https://github.com/PowerShellYoungTeam/Marks-Temple/actions/workflows/ci.yml/badge.svg)
+
+## Contributing
+
+Pull requests are welcome. Please add tests for new features.
+
+## License
+
+MIT
