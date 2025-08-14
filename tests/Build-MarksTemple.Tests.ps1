@@ -27,7 +27,6 @@ Import-Module $moduleFile -Force -Verbose
 
 Write-Host "Functions loaded:"
 Get-Command -Type Function | Where-Object Name -like '*MarksTemple*' | Format-Table Name, Source
-
 Describe "Build-MarksTemple" {
     Context "Load" {
         It "Function should be loaded" {
