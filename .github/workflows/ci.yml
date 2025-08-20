@@ -7,6 +7,32 @@ on:
     branches: [ main ]
 
 jobs:
+  code-analysis:
+    name: Code Analysis
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install PSScriptAnalyzer
+      shell: pwsh
+      run: |
+        Set-PSRepository PSGallery -InstallationPolicy Trusted
+        Install-Module -Name PSScriptAnalyzer -Force
+
+    - name: Run PSScriptAnalyzer
+      shell: pwsh
+      run: |
+        $analyzerResults = Invoke-ScriptAnalyzer -Path ./src -Recurse -Settings PSGallery
+        $analyzerResults | Format-Table -AutoSize
+
+        $errorCount = ($analyzerResults | Where-Object { $_.Severity -eq 'Error' }).Count
+        $warningCount = ($analyzerResults | Where-Object { $_.Severity -eq 'Warning' }).Count
+
+        Write-Host "Found $errorCount errors and $warningCount warnings"
+
+        if ($errorCount -gt 0) {
+          throw "PSScriptAnalyzer found $errorCount errors. Check the output above for details."
+        }
   test-windows-powershell:
     name: Windows PowerShell (Windows)
     runs-on: windows-latest
