@@ -1,4 +1,3 @@
-# Create a file at the repo root: PSScriptAnalyzerSettings.psd1
 @{
     Severity     = @('Error', 'Warning')
     ExcludeRules = @(
