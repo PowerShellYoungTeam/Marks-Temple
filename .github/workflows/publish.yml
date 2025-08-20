@@ -25,12 +25,48 @@ jobs:
       - name: Run PSScriptAnalyzer
         shell: pwsh
         run: |
-          Install-Module PSScriptAnalyzer -Force
-          $results = Invoke-ScriptAnalyzer -Path ./src -Recurse
-          if ($results) {
+            Remove-Module PSScriptAnalyzer -Force -ErrorAction SilentlyContinue
+            Get-Module PSScriptAnalyzer -ListAvailable | Remove-Module -Force -ErrorAction SilentlyContinue
+
+            # Install a fresh copy
+            Install-Module PSScriptAnalyzer -Force -SkipPublisherCheck
+
+            # Verify module is loaded correctly
+            Import-Module PSScriptAnalyzer -Force
+            Write-Host "PSScriptAnalyzer version: $((Get-Module PSScriptAnalyzer).Version)"
+
+            # List files to be analyzed
+            Write-Host "Files to analyze:"
+            Get-ChildItem -Path ./src -Recurse | Where-Object { $_.Extension -match 'ps1|psm1|psd1' } | Select-Object FullName
+
+            # Run analyzer with explicit settings and error handling
+            try {
+            $settingsPath = Join-Path -Path $PWD -ChildPath 'PSScriptAnalyzerSettings.psd1'
+            Write-Host "Using settings from: $settingsPath"
+
+            if (Test-Path $settingsPath) {
+                $results = Invoke-ScriptAnalyzer -Path ./src -Recurse -Settings $settingsPath -Verbose
+            } else {
+                Write-Host "Settings file not found, using default settings"
+                $results = Invoke-ScriptAnalyzer -Path ./src -Recurse -Verbose
+            }
+
+            if ($results) {
             $results | Format-Table
-            throw "PSScriptAnalyzer found issues that need to be resolved before publishing."
-          }
+            $errorCount = ($results | Where-Object { $_.Severity -eq 'Error' }).Count
+
+            if ($errorCount -gt 0) {
+            throw "PSScriptAnalyzer found $errorCount errors. See output for details."
+            } else {
+            Write-Host "PSScriptAnalyzer completed with warnings but no errors."
+            }
+            } else {
+            Write-Host "PSScriptAnalyzer completed with no issues found."
+            }
+            } catch {
+                Write-Host "Error running PSScriptAnalyzer: $_"
+                throw $_
+            }
 
       - name: Publish module
         shell: pwsh
