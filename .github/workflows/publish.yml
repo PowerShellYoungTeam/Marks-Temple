@@ -1,0 +1,44 @@
+name: Publish to PowerShell Gallery
+
+# This workflow publishes the module to PowerShell Gallery when a release is created
+# To use this workflow:
+# 1. Get a PowerShell Gallery API key (see README.md)
+# 2. Add the API key as a repository secret named PSGALLERY_API_KEY
+# 3. Create a GitHub release to trigger this workflow
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    name: Publish to PowerShell Gallery
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Validate module manifest
+        run: |
+          Test-ModuleManifest .\src\Build-MarksTemple.psd1
+          Write-Host "Module manifest is valid"
+        shell: powershell
+        
+      - name: Run tests before publishing
+        run: |
+          Install-Module -Name Pester -Force -Scope CurrentUser
+          Import-Module Pester
+          $moduleFile = Resolve-Path './src/Build-MarksTemple.psm1'
+          Import-Module $moduleFile -Force
+          Invoke-Pester -Path tests -Output Detailed
+        shell: powershell
+        
+      - name: Publish to PowerShell Gallery
+        run: |
+          Write-Host "Publishing Build-MarksTemple module to PowerShell Gallery..."
+          Publish-Module -Path .\src -NuGetApiKey $env:PSGALLERY_API_KEY -Repository PSGallery -Verbose
+          Write-Host "Module published successfully!"
+        env:
+          PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
+        shell: powershell

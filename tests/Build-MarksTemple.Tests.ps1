@@ -27,6 +27,19 @@ Import-Module $moduleFile -Force -Verbose
 Write-Host "Functions loaded:"
 Get-Command -Type Function | Where-Object Name -like '*MarksTemple*' | Format-Table Name, Source
 Describe "Build-MarksTemple" {
+    Context "Module Manifest" {
+        It "Module manifest should be valid" {
+            $manifestPath = Join-Path (Split-Path $PSScriptRoot) "src/Build-MarksTemple.psd1"
+            { Test-ModuleManifest $manifestPath } | Should -Not -Throw
+        }
+
+        It "Module can be imported via manifest" {
+            $manifestPath = Join-Path (Split-Path $PSScriptRoot) "src/Build-MarksTemple.psd1"
+            Import-Module $manifestPath -Force
+            (Get-Command Build-MarksTemple -ErrorAction SilentlyContinue) | Should -Not -BeNullOrEmpty
+        }
+    }
+
     Context "Load" {
         It "Function should be loaded" {
             (Get-Command Build-MarksTemple -ErrorAction SilentlyContinue) | Should -Not -BeNullOrEmpty
