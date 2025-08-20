@@ -23,23 +23,29 @@ This was promised to Mark Russinovich after hours burning my eyes staring at Pro
 Install-Module -Name Build-MarksTemple -Scope CurrentUser
 ```
 
-# Clone the repository
+## Clone the repository
+
 git clone https://github.com/PowerShellYoungTeam/Marks-Temple.git
 cd Marks-Temple
 
-# Import the module
+## Import the module
+
 Import-Module ./src/Build-MarksTemple.psm1
 
-# Display the temple with default colors (Yellow on Black)
+## Display the temple with default colors (Yellow on Black)
+
 Build-MarksTemple
 
-# Change the colors
+## Change the colors
+
 Build-MarksTemple -ForeGroundColour Red -BackGroundColour White
 
-# Use a custom temple file
+## Use a custom temple file
+
 Build-MarksTemple -TemplePath 'C:\Custom\Temple.txt'
 
-# Available Colors
+## Available Colors
+
 The module supports all standard PowerShell console colors:
 
 Black
@@ -59,7 +65,7 @@ Magenta
 Yellow
 White
 
-# Development
+## Development
 
 Prerequisites
 PowerShell 5.1 or later
@@ -70,9 +76,9 @@ Running Tests
 Invoke-Pester -Path tests
 ```
 
-# Build and Version
-To increment the version:
+## Build and Version
 
+To increment the version:
 
 ```powershell
 # For patch version (0.0.x)
@@ -85,7 +91,8 @@ To increment the version:
 ./build/Update-Version.ps1 -BumpType Major
 ```
 
-# Contributing
+## Contributing
+
 Pull requests are welcome. Please add tests for new features.
 
 Fork the repository
@@ -94,6 +101,6 @@ Commit your changes (git commit -m 'Add some amazing feature')
 Push to the branch (git push origin feature/amazing-feature)
 Open a Pull Request
 
-# License
+## License
 
 MIT
