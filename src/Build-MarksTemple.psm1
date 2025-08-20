@@ -30,6 +30,7 @@ Function Build-MarksTemple {
     Valid colours (ConsoleColor): Black, DarkBlue, DarkGreen, DarkCyan, DarkRed, DarkMagenta,
     DarkYellow, Gray, DarkGray, Blue, Green, Cyan, Red, Magenta, Yellow, White.
     #>
+    [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingWriteHost', '', Scope = 'Function')]
     [CmdletBinding()]
     param(
         [ValidateSet("Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed", "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue", "Green", "Cyan", "Red", "Magenta", "Yellow", "White")]

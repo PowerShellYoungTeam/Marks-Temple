@@ -51,6 +51,8 @@ jobs:
             }
 
             # Run analyzer with explicit error handling
+            Write-Host "Settings file exists: $(Test-Path ./PSScriptAnalyzerSettings.psd1)"
+            Get-Content -Path ./PSScriptAnalyzerSettings.psd1 -ErrorAction SilentlyContinue
             try {
             if (Test-Path $settingsPath) {
                 Write-Host "Using settings from: $settingsPath"

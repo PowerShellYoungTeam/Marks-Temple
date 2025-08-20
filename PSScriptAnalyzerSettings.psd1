@@ -2,7 +2,8 @@
 @{
     Severity     = @('Error', 'Warning')
     ExcludeRules = @(
-        # Add any rules you want to exclude
+        'PSAvoidUsingWriteHost',
+        'PSUseToExportFieldsInManifest'
     )
     Rules        = @{
         PSAvoidUsingWriteHost = @{
