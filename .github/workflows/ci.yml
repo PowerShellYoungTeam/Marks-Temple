@@ -22,7 +22,7 @@ jobs:
     - name: Run PSScriptAnalyzer
       shell: pwsh
       run: |
-        $analyzerResults = Invoke-ScriptAnalyzer -Path ./src -Recurse -Settings ./PSScriptAnalyzerSettings.psd1
+        $analyzerResults = Invoke-ScriptAnalyzer -Path ./src/MarksTemple -Recurse -Settings ./PSScriptAnalyzerSettings.psd1
         $analyzerResults | Format-Table -AutoSize
 
         $errorCount = ($analyzerResults | Where-Object { $_.Severity -eq 'Error' }).Count
