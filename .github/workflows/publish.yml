@@ -1,9 +1,9 @@
 name: Publish Module
 
 on:
-  workflow_dispatch:
-  release:
-    types: [created]
+    workflow_dispatch:
+    release:
+      types: [created]
 
 jobs:
   publish:
@@ -16,6 +16,17 @@ jobs:
         shell: pwsh
         run: |
           Install-Module -Name PowerShellGet -Force -SkipPublisherCheck
+
+      - name: Publish module
+        shell: pwsh
+        env:
+          PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
+        run: |
+          $manifestInfo = Test-ModuleManifest -Path ./src/Build-MarksTemple.psd1
+          $version = $manifestInfo.Version
+          Write-Host "Publishing module version: $version"
+
+          Publish-Module -Path ./src -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose
 
       - name: Run PSScriptAnalyzer
         shell: pwsh
@@ -79,7 +90,7 @@ jobs:
             Write-Host "Error running PSScriptAnalyzer: $_"
             Write-Host "Stack trace: $($_.ScriptStackTrace)"
 
-            # Continue despite errors (optional - remove if you want to fail on analysis errors)
+             Continue despite errors (optional - remove if you want to fail on analysis errors)
             Write-Host "Continuing despite analysis errors."
             }
 
@@ -88,8 +99,8 @@ jobs:
         env:
           PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
         run: |
-          $manifestInfo = Test-ModuleManifest -Path ./src/MarksTemple/MarksTemple.psd1
+          $manifestInfo = Test-ModuleManifest -Path ./src/Build-MarksTemple.psd1
           $version = $manifestInfo.Version
           Write-Host "Publishing module version: $version"
 
-          Publish-Module -Path ./src/MarksTemple -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose
+          Publish-Module -Path ./src -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose
