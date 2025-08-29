@@ -17,17 +17,6 @@ jobs:
         run: |
           Install-Module -Name PowerShellGet -Force -SkipPublisherCheck
 
-      - name: Publish module
-        shell: pwsh
-        env:
-          PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
-        run: |
-          $manifestInfo = Test-ModuleManifest -Path ./src/MarksTemple/MarksTemple.psd1
-          $version = $manifestInfo.Version
-          Write-Host "Publishing module version: $version"
-
-          Publish-Module -Path ./src/MarksTemple -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose
-
       - name: Run PSScriptAnalyzer
         shell: pwsh
         run: |
@@ -90,7 +79,7 @@ jobs:
             Write-Host "Error running PSScriptAnalyzer: $_"
             Write-Host "Stack trace: $($_.ScriptStackTrace)"
 
-             Continue despite errors (optional - remove if you want to fail on analysis errors)
+            Continue despite errors (optional - remove if you want to fail on analysis errors)
             Write-Host "Continuing despite analysis errors."
             }
 
