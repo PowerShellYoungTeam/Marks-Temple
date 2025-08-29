@@ -1,6 +1,7 @@
 name: Publish Module
 
 on:
+    workflow_dispatch:
     release:
       types: [created]
 
