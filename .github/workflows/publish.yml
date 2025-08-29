@@ -16,72 +16,6 @@ jobs:
         run: |
           Install-Module -Name PowerShellGet -Force -SkipPublisherCheck
 
-      - name: Run PSScriptAnalyzer
-        shell: pwsh
-        run: |
-            # Print working directory and repository contents for debugging
-            Write-Host "Working directory: $PWD"
-            Write-Host "Repository contents:"
-            Get-ChildItem -Path $PWD -Recurse -Depth 1
-
-            # Remove existing modules
-            Remove-Module PSScriptAnalyzer -Force -ErrorAction SilentlyContinue
-
-            # Install a fresh copy
-            Install-Module PSScriptAnalyzer -Force -SkipPublisherCheck
-            Import-Module PSScriptAnalyzer -Force
-            Write-Host "PSScriptAnalyzer version: $((Get-Module PSScriptAnalyzer).Version)"
-
-            # Use absolute paths
-            $srcPath = Join-Path -Path $PWD -ChildPath "src"
-            $settingsPath = Join-Path -Path $PWD -ChildPath "PSScriptAnalyzerSettings.psd1"
-
-            # Verify paths exist
-            Write-Host "Source path: $srcPath - Exists: $(Test-Path $srcPath)"
-            Write-Host "Settings path: $settingsPath - Exists: $(Test-Path $settingsPath)"
-
-            # List files to be analyzed
-            Write-Host "Files to analyze:"
-            Get-ChildItem -Path $srcPath -Recurse | Where-Object { $_.Extension -match 'ps1|psm1|psd1' } | Select-Object FullName
-
-            # Skip analysis if no files found
-            if (-not (Get-ChildItem -Path $srcPath -Recurse | Where-Object { $_.Extension -match 'ps1|psm1|psd1' })) {
-            Write-Host "No PowerShell files found to analyze. Skipping analysis."
-            return
-            }
-
-            # Run analyzer with explicit error handling
-            Write-Host "Settings file exists: $(Test-Path ./PSScriptAnalyzerSettings.psd1)"
-            Get-Content -Path ./PSScriptAnalyzerSettings.psd1 -ErrorAction SilentlyContinue
-            try {
-            if (Test-Path $settingsPath) {
-                Write-Host "Using settings from: $settingsPath"
-                $results = Invoke-ScriptAnalyzer -Path $srcPath -Recurse -Settings $settingsPath -Verbose
-            } else {
-                Write-Host "Settings file not found, using default settings"
-                $results = Invoke-ScriptAnalyzer -Path $srcPath -Recurse -Verbose
-            }
-
-            if ($results) {
-                $results | Format-Table
-                $errorCount = ($results | Where-Object { $_.Severity -eq 'Error' }).Count
-
-                if ($errorCount -gt 0) {
-                throw "PSScriptAnalyzer found $errorCount errors. See output for details."
-                } else {
-                Write-Host "PSScriptAnalyzer completed with warnings but no errors."
-                }
-            } else {
-                Write-Host "PSScriptAnalyzer completed with no issues found."
-            }
-            } catch {
-            Write-Host "Error running PSScriptAnalyzer: $_"
-            Write-Host "Stack trace: $($_.ScriptStackTrace)"
-
-            # Continue despite errors (optional - remove if you want to fail on analysis errors)
-            Write-Host "Continuing despite analysis errors."
-            }
-
       - name: Publish module
         shell: pwsh
         env:
@@ -92,3 +26,69 @@ jobs:
           Write-Host "Publishing module version: $version"
 
           Publish-Module -Path ./src -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose
+
+      #- name: Run PSScriptAnalyzer
+       # shell: pwsh
+        #run: |
+         #   # Print working directory and repository contents for debugging
+          #  Write-Host "Working directory: $PWD"
+           # Write-Host "Repository contents:"
+            #Get-ChildItem -Path $PWD -Recurse -Depth 1
+
+            # Remove existing modules
+            #Remove-Module PSScriptAnalyzer -Force -ErrorAction SilentlyContinue
+
+            # Install a fresh copy
+            #Install-Module PSScriptAnalyzer -Force -SkipPublisherCheck
+            #Import-Module PSScriptAnalyzer -Force
+            #Write-Host "PSScriptAnalyzer version: $((Get-Module PSScriptAnalyzer).Version)"
+
+            # Use absolute paths
+            #$srcPath = Join-Path -Path $PWD -ChildPath "src"
+            #$settingsPath = Join-Path -Path $PWD -ChildPath "PSScriptAnalyzerSettings.psd1"
+
+            # Verify paths exist
+            #Write-Host "Source path: $srcPath - Exists: $(Test-Path $srcPath)"
+            #Write-Host "Settings path: $settingsPath - Exists: $(Test-Path $settingsPath)"
+
+            # List files to be analyzed
+            #Write-Host "Files to analyze:"
+            #Get-ChildItem -Path $srcPath -Recurse | Where-Object { $_.Extension -match 'ps1|psm1|psd1' } | Select-Object FullName
+
+            # Skip analysis if no files found
+            #if (-not (Get-ChildItem -Path $srcPath -Recurse | Where-Object { $_.Extension -match 'ps1|psm1|psd1' })) {
+            #Write-Host "No PowerShell files found to analyze. Skipping analysis."
+            #return
+            #}
+
+            # Run analyzer with explicit error handling
+            #Write-Host "Settings file exists: $(Test-Path ./PSScriptAnalyzerSettings.psd1)"
+            #Get-Content -Path ./PSScriptAnalyzerSettings.psd1 -ErrorAction SilentlyContinue
+            #try {
+            #if (Test-Path $settingsPath) {
+            #    Write-Host "Using settings from: $settingsPath"
+            #    $results = Invoke-ScriptAnalyzer -Path $srcPath -Recurse -Settings $settingsPath -Verbose
+            #} else {
+            #    Write-Host "Settings file not found, using default settings"
+            #    $results = Invoke-ScriptAnalyzer -Path $srcPath -Recurse -Verbose
+            #}
+
+            #if ($results) {
+            #    $results | Format-Table
+            #    $errorCount = ($results | Where-Object { $_.Severity -eq 'Error' }).Count
+
+            #    if ($errorCount -gt 0) {
+            #    throw "PSScriptAnalyzer found $errorCount errors. See output for details."
+            #    } else {
+            #    Write-Host "PSScriptAnalyzer completed with warnings but no errors."
+            #    }
+            #} else {
+            #    Write-Host "PSScriptAnalyzer completed with no issues found."
+            #}
+            #} catch {
+            #Write-Host "Error running PSScriptAnalyzer: $_"
+            #Write-Host "Stack trace: $($_.ScriptStackTrace)"
+
+            # Continue despite errors (optional - remove if you want to fail on analysis errors)
+            #Write-Host "Continuing despite analysis errors."
+            #}
