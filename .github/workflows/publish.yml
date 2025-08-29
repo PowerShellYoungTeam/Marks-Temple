@@ -26,7 +26,7 @@ jobs:
           $version = $manifestInfo.Version
           Write-Host "Publishing module version: $version"
 
-          Publish-Module -Path ./src/Build-MarksTemple.psd1 -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose
+          Publish-Module -Path ./src -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose
 
       - name: Run PSScriptAnalyzer
         shell: pwsh
