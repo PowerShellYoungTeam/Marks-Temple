@@ -1,8 +1,9 @@
 name: Publish Module
 
 on:
-    release:
-      types: [created]
+  workflow_dispatch:
+  release:
+    types: [created]
 
 jobs:
   publish:
@@ -33,7 +34,7 @@ jobs:
             Write-Host "PSScriptAnalyzer version: $((Get-Module PSScriptAnalyzer).Version)"
 
             # Use absolute paths
-            $srcPath = Join-Path -Path $PWD -ChildPath "src"
+            $srcPath = Join-Path -Path $PWD -ChildPath "src/MarksTemple"
             $settingsPath = Join-Path -Path $PWD -ChildPath "PSScriptAnalyzerSettings.psd1"
 
             # Verify paths exist
@@ -87,8 +88,8 @@ jobs:
         env:
           PSGALLERY_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
         run: |
-          $manifestInfo = Test-ModuleManifest -Path ./src/Build-MarksTemple.psd1
+          $manifestInfo = Test-ModuleManifest -Path ./src/MarksTemple/MarksTemple.psd1
           $version = $manifestInfo.Version
           Write-Host "Publishing module version: $version"
 
-          Publish-Module -Path ./src -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose
+          Publish-Module -Path ./src/MarksTemple -NuGetApiKey $env:PSGALLERY_API_KEY -Verbose

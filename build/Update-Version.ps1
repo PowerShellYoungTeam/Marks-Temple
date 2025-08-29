@@ -33,7 +33,7 @@ $version.prerelease = $PreRelease
 $version | ConvertTo-Json | Set-Content -Path $versionFile
 
 # Update module manifest
-$manifestPath = Join-Path $PSScriptRoot '..\src\Build-MarksTemple.psd1'
+$manifestPath = Join-Path $PSScriptRoot '..\src\MarksTemple\MarksTemple.psd1'
 $versionString = "{0}.{1}.{2}" -f $version.major, $version.minor, $version.patch
 if ($PreRelease) {
     $versionString += "-$PreRelease"

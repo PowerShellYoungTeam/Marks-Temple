@@ -6,8 +6,8 @@ This was promised to Mark Russinovich after hours burning my eyes staring at Pro
 [Twitter Thread](https://x.com/PoSHYoungTeam/status/1418667570920570881)
 
 ![CI](https://github.com/PowerShellYoungTeam/Marks-Temple/actions/workflows/ci.yml/badge.svg)
-[![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/Build-MarksTemple)](https://www.powershellgallery.com/packages/Build-MarksTemple)
-[![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/Build-MarksTemple)](https://www.powershellgallery.com/packages/Build-MarksTemple)
+[![PowerShell Gallery Version](https://img.shields.io/powershellgallery/v/MarksTemple)](https://www.powershellgallery.com/packages/MarksTemple)
+[![PowerShell Gallery](https://img.shields.io/powershellgallery/dt/MarksTemple)](https://www.powershellgallery.com/packages/MarksTemple)
 
 ## Features
 
@@ -20,7 +20,7 @@ This was promised to Mark Russinovich after hours burning my eyes staring at Pro
 ### PowerShell Gallery (Recommended)
 
 ```powershell
-Install-Module -Name Build-MarksTemple -Scope CurrentUser
+Install-Module -Name MarksTemple -Scope CurrentUser
 ```
 
 ## Clone the repository
@@ -30,7 +30,7 @@ cd Marks-Temple
 
 ## Import the module
 
-Import-Module ./src/Build-MarksTemple.psm1
+Import-Module ./src/MarksTemple/MarksTemple.psm1
 
 ## Display the temple with default colors (Yellow on Black)
 

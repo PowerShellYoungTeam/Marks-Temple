@@ -45,9 +45,9 @@ jobs:
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: powershell
 
-      - name: Import Build-MarksTemple module and run Pester tests
+      - name: Import MarksTemple module and run Pester tests
         run: |
-          $moduleFile = Resolve-Path './src/Build-MarksTemple.psm1'
+          $moduleFile = Resolve-Path './src/MarksTemple/MarksTemple.psm1'
           Import-Module $moduleFile -Force
           Write-Host "Functions after Import-Module:"
           Get-Command -Type Function | where-object -property Name -like '*Build-MarksTemple*' | Format-Table Name,Source
@@ -67,9 +67,9 @@ jobs:
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: pwsh
 
-      - name: Import Build-MarksTemple module and run Pester tests
+      - name: Import MarksTemple module and run Pester tests
         run: |
-          $moduleFile = Resolve-Path './src/Build-MarksTemple.psm1'
+          $moduleFile = Resolve-Path './src/MarksTemple/MarksTemple.psm1'
           Import-Module $moduleFile -Force
           Write-Host "Functions after Import-Module:"
           Get-Command -Type Function | where-object -property Name -like '*Build-MarksTemple*' | Format-Table Name,Source
@@ -92,9 +92,9 @@ jobs:
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: pwsh
 
-      - name: Import Build-MarksTemple module and run Pester tests
+      - name: Import MarksTemple module and run Pester tests
         run: |
-          $moduleFile = Resolve-Path './src/Build-MarksTemple.psm1'
+          $moduleFile = Resolve-Path './src/MarksTemple/MarksTemple.psm1'
           Import-Module $moduleFile -Force
           Write-Host "Functions after Import-Module:"
           Get-Command -Type Function | where-object -property Name -like '*Build-MarksTemple*' | Format-Table Name,Source
@@ -115,9 +115,9 @@ jobs:
           Get-Module -ListAvailable -Name Pester | Sort-Object Version -Descending | Select-Object -First 1
         shell: pwsh
 
-      - name: Import Build-MarksTemple module and run Pester tests
+      - name: Import MarksTemple module and run Pester tests
         run: |
-          $moduleFile = Resolve-Path './src/Build-MarksTemple.psm1'
+          $moduleFile = Resolve-Path './src/MarksTemple/MarksTemple.psm1'
           Import-Module $moduleFile -Force
           Write-Host "Functions after Import-Module:"
           Get-Command -Type Function | where-object -property Name -like '*Build-MarksTemple*' | Format-Table Name,Source

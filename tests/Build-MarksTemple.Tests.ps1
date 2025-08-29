@@ -3,7 +3,7 @@
 Write-Host "Current directory: $(Get-Location)"
 Write-Host "PSScriptRoot: $PSScriptRoot"
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
-$moduleFile = Join-Path $repoRoot 'src/Build-MarksTemple.psm1'
+$moduleFile = Join-Path $repoRoot 'src\MarksTemple\MarksTemple.psm1'
 
 # Search for Temple.txt anywhere in the repo
 $templePathObj = Get-ChildItem -Path $repoRoot.Path -Recurse -Filter Temple.txt -File | Select-Object -First 1
